@@ -42,11 +42,13 @@ class MainActivity : ComponentActivity() {
     private var songs by mutableStateOf(listOf<Song>())
     private var songloc by mutableIntStateOf(0)
     private var mediaPlayer: MediaPlayer? = null
+    private var newSongs by mutableStateOf(listOf<Song>())
     private lateinit var database: TrailMixDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         database = TrailMixDatabase.getDatabase(this)
+
         loadSongs()
 
         setContent {
@@ -66,6 +68,9 @@ class MainActivity : ComponentActivity() {
                     },
                     empty = {
                         empty()
+                    },
+                    import = {
+                        importSongs()
                     },
                     play = {
                         play()
@@ -87,7 +92,6 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun scanMusic() {
-
         lifecycleScope.launch {
 
             val scanner = LibraryScanner(
@@ -97,22 +101,31 @@ class MainActivity : ComponentActivity() {
 
             val result = scanner.scan()
 
-            if (result.newSongs.size >= 3) {
-                // Show import UI
-            }
+            newSongs = result.newSongs
 
-            songs = database.songDao().getAllSongs()
-            songCount = songs.size
+            println("NEW SONGS: ${newSongs.size}")
         }
     }
-    fun inc(){
-        songloc++
+
+    fun inc() {
+        if (songloc < songs.size - 1) {
+            songloc++
+        }
     }
-    fun dec(){
-        songloc--
+
+    fun dec() {
+        if (songloc > 0) {
+            songloc--
+        }
     }
-    fun empty(){
-        songs = emptyList()
+    fun empty() {
+        lifecycleScope.launch {
+            database.songDao().deleteAll()
+
+            songs = emptyList()
+            songCount = 0
+            songloc = 0
+        }
     }
     fun play(){
         mediaPlayer?.release()
@@ -130,6 +143,16 @@ class MainActivity : ComponentActivity() {
             songCount = songs.size
         }
     }
+    private fun importSongs() {
+        lifecycleScope.launch {
+
+            database.songDao().insertAll(newSongs)
+            newSongs = emptyList()
+
+            songs = database.songDao().getAllSongs()
+            songCount = songs.size
+        }
+    }
 }
 
 
@@ -142,7 +165,8 @@ fun TrailMixScreen(
     inc: () -> Unit,
     dec: () -> Unit,
     play: () -> Unit,
-    empty: () -> Unit
+    empty: () -> Unit,
+    import: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -160,7 +184,7 @@ fun TrailMixScreen(
             Text("Scan Music")
         }
         if (songs.isNotEmpty()) {
-            Text("Song #$songloc: ${songs[songloc].title}")
+            Text("Song #$songloc: ${songs[songloc].title}\n ${songs[songloc].duration} long")
         }
         Button(
             onClick = inc
@@ -181,6 +205,11 @@ fun TrailMixScreen(
             onClick = empty
         ) {
             Text("del")
+        }
+        Button(
+            onClick = import
+        ) {
+            Text("import")
         }
     }
 }

@@ -2,10 +2,13 @@ package com.example.trailmix.data
 
 import android.content.ContentResolver
 import android.content.Context
+import android.os.Build
 import android.provider.MediaStore
+import androidx.annotation.RequiresApi
 
 class MusicScanner(private val context: Context) {
 
+    @RequiresApi(Build.VERSION_CODES.R)
     fun scan(): List<Song> {
 
         val songs = mutableListOf<Song>()
@@ -27,7 +30,7 @@ class MusicScanner(private val context: Context) {
         val cursor = context.contentResolver.query(
             collection,
             projection,
-            selection,
+            null,
             null,
             "${MediaStore.Audio.Media.TITLE} ASC"
         )
@@ -50,6 +53,9 @@ class MusicScanner(private val context: Context) {
                 it.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)
 
             while (it.moveToNext()) {
+                println(
+                "FOUND: ${it.getString(titleColumn)}"
+            )
 
                 val id = it.getLong(idColumn)
 
@@ -65,6 +71,7 @@ class MusicScanner(private val context: Context) {
                     artist = it.getString(artistColumn),
                     album = it.getString(albumColumn),
                     duration = it.getLong(durationColumn)
+//                    username = "Placeholder Name"
                 )
 
                 songs.add(song)

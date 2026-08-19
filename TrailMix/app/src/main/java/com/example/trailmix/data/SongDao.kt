@@ -14,6 +14,9 @@ interface SongDao {
     @Query("SELECT * FROM songs WHERE uri = :uri LIMIT 1")
     suspend fun getSongByUri(uri: String): Song?
 
+    @Query("DELETE FROM songs")
+    suspend fun deleteAll()
+
     @Insert
     suspend fun insert(song: Song)
 

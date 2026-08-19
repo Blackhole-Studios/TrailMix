@@ -15,6 +15,7 @@ data class Song(
     val artist: String?,
     val album: String?,
     val duration: Long,
+    //val username: String,
 
     val missing: Boolean = false
 )
