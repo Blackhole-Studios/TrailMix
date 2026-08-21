@@ -1,6 +1,6 @@
 # TrailMix ⛰️
 
-TrailMix is an offline music player for Android built around the music already stored on your device.
+TrailMix is an offline music player for Android (iOS later) built around the music already stored on your device.
 
 The goal is simple: give local music the convenience of a modern streaming app without requiring a streaming service or an internet connection.
 
