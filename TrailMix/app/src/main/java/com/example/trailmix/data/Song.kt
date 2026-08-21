@@ -1,6 +1,5 @@
 package com.example.trailmix.data
 
-import android.net.Uri
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -10,12 +9,11 @@ data class Song(
     val id: Long = 0,
 
     val uri: String,
-
     val title: String,
     val artist: String?,
     val album: String?,
     val duration: Long,
-    //val username: String,
 
-    val missing: Boolean = false
+    val missing: Boolean = false,
+    val show: Boolean = true
 )

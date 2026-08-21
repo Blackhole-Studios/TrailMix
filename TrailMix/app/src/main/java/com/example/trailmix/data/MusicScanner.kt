@@ -1,12 +1,13 @@
 package com.example.trailmix.data
 
-import android.content.ContentResolver
 import android.content.Context
 import android.os.Build
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 
-class MusicScanner(private val context: Context) {
+class MusicScanner(
+    private val context: Context
+) {
 
     @RequiresApi(Build.VERSION_CODES.R)
     fun scan(): List<Song> {
@@ -24,13 +25,10 @@ class MusicScanner(private val context: Context) {
             MediaStore.Audio.Media.DURATION
         )
 
-        val selection = null
-            //"${MediaStore.Audio.Media.IS_MUSIC} != 0"
-
         val cursor = context.contentResolver.query(
             collection,
             projection,
-            null,
+            null,//"${MediaStore.Audio.Media.IS_MUSIC} != 0",
             null,
             "${MediaStore.Audio.Media.TITLE} ASC"
         )
@@ -38,43 +36,51 @@ class MusicScanner(private val context: Context) {
         cursor?.use {
 
             val idColumn =
-                it.getColumnIndexOrThrow(MediaStore.Audio.Media._ID)
+                it.getColumnIndexOrThrow(
+                    MediaStore.Audio.Media._ID
+                )
 
             val titleColumn =
-                it.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE)
+                it.getColumnIndexOrThrow(
+                    MediaStore.Audio.Media.TITLE
+                )
 
             val artistColumn =
-                it.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST)
+                it.getColumnIndexOrThrow(
+                    MediaStore.Audio.Media.ARTIST
+                )
 
             val albumColumn =
-                it.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM)
+                it.getColumnIndexOrThrow(
+                    MediaStore.Audio.Media.ALBUM
+                )
 
             val durationColumn =
-                it.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)
+                it.getColumnIndexOrThrow(
+                    MediaStore.Audio.Media.DURATION
+                )
 
             while (it.moveToNext()) {
-                println(
-                "FOUND: ${it.getString(titleColumn)}"
-            )
 
                 val id = it.getLong(idColumn)
 
-                val uri = MediaStore.Audio.Media
-                    .getContentUri(
-                        MediaStore.VOLUME_EXTERNAL,
-                        id
+                val uri =
+                    MediaStore.Audio.Media
+                        .getContentUri(
+                            MediaStore.VOLUME_EXTERNAL,
+                            id
+                        )
+                        .toString()
+
+                songs.add(
+                    Song(
+                        uri = uri,
+                        title = it.getString(titleColumn),
+                        artist = it.getString(artistColumn),
+                        album = it.getString(albumColumn),
+                        duration = it.getLong(durationColumn)
                     )
-
-                val song = Song(
-                    uri = uri.toString(),
-                    title = it.getString(titleColumn),
-                    artist = it.getString(artistColumn),
-                    album = it.getString(albumColumn),
-                    duration = it.getLong(durationColumn)
-//                    username = "Placeholder Name"
                 )
-
-                songs.add(song)
             }
         }
 

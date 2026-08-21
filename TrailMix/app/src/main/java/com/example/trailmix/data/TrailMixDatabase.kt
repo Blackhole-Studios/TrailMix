@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 
 @Database(
     entities = [Song::class],
-    version = 1,
+    version = 3,
     exportSchema = false
 )
 abstract class TrailMixDatabase : RoomDatabase() {
@@ -20,15 +20,19 @@ abstract class TrailMixDatabase : RoomDatabase() {
         private var INSTANCE: TrailMixDatabase? = null
 
         fun getDatabase(context: Context): TrailMixDatabase {
+
             return INSTANCE ?: synchronized(this) {
 
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     TrailMixDatabase::class.java,
-                    "trailmix_internal_database"
-                ).build()
+                    "trailmix_database"
+                )
+                    .fallbackToDestructiveMigration(false)
+                    .build()
 
                 INSTANCE = instance
+
                 instance
             }
         }

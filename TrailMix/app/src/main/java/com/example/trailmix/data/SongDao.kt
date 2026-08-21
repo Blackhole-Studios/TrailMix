@@ -8,14 +8,11 @@ import androidx.room.Update
 @Dao
 interface SongDao {
 
-    @Query("SELECT * FROM songs")
-    suspend fun getAllSongs(): List<Song>
+    @Query("SELECT * FROM songs ORDER BY title COLLATE NOCASE")
+    suspend fun getAll(): List<Song>
 
     @Query("SELECT * FROM songs WHERE uri = :uri LIMIT 1")
-    suspend fun getSongByUri(uri: String): Song?
-
-    @Query("DELETE FROM songs")
-    suspend fun deleteAll()
+    suspend fun getByUri(uri: String): Song?
 
     @Insert
     suspend fun insert(song: Song)
@@ -25,4 +22,10 @@ interface SongDao {
 
     @Update
     suspend fun update(song: Song)
+
+    @Update
+    suspend fun updateAll(songs: List<Song>)
+
+    @Query("DELETE FROM songs")
+    suspend fun deleteAll()
 }
