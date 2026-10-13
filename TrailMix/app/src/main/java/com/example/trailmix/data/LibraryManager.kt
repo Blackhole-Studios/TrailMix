@@ -102,10 +102,13 @@ class LibraryManager(
         newSongs: List<Song>,
         selectedSongs: Set<Song>
     ) {
-        // Add every new song, preserving its checkbox state.
+        val selectedUris = selectedSongs
+            .map { it.uri }
+            .toSet()
+
         val processedNewSongs = newSongs.map { song ->
             song.copy(
-                show = selectedSongs.contains(song)
+                show = song.uri in selectedUris
             )
         }
 
@@ -113,12 +116,11 @@ class LibraryManager(
             dao.insertAll(processedNewSongs)
         }
 
-        // Update every existing song's show state.
         val existingSongs = dao.getAll()
 
         val updatedSongs = existingSongs.map { song ->
             song.copy(
-                show = selectedSongs.contains(song)
+                show = song.uri in selectedUris
             )
         }
 

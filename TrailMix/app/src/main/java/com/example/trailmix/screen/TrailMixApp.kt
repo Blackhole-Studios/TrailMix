@@ -5,12 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.LibraryMusic
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Storage
+import androidx.compose.ui.res.painterResource
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -20,6 +15,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.example.trailmix.data.LibraryManager
+import com.example.trailmix.R
 
 enum class TrailMixScreen {
     LIBRARY,
@@ -56,7 +52,12 @@ fun TrailMixApp() {
                     },
                     icon = {
                         Icon(
-                            Icons.Default.LibraryMusic,
+                            painter = painterResource(
+                                if (currentScreen == TrailMixScreen.LIBRARY)
+                                    R.drawable.library_filled
+                                else
+                                    R.drawable.library_unfilled
+                            ),
                             contentDescription = "Library"
                         )
                     },
@@ -72,7 +73,9 @@ fun TrailMixApp() {
                     },
                     icon = {
                         Icon(
-                            Icons.Default.Search,
+                            painter = painterResource(
+                                R.drawable.search
+                            ),
                             contentDescription = "Search"
                         )
                     },
@@ -88,7 +91,12 @@ fun TrailMixApp() {
                     },
                     icon = {
                         Icon(
-                            Icons.Default.Home,
+                            painter = painterResource(
+                                if (currentScreen == TrailMixScreen.HOME)
+                                    R.drawable.home_filled
+                                else
+                                    R.drawable.home_unfilled
+                            ),
                             contentDescription = "Home"
                         )
                     },
@@ -104,7 +112,12 @@ fun TrailMixApp() {
                     },
                     icon = {
                         Icon(
-                            Icons.Default.Storage,
+                            painter = painterResource(
+                                if (currentScreen == TrailMixScreen.DATABASE)
+                                    R.drawable.database_filled
+                                else
+                                    R.drawable.database_unfilled
+                            ),
                             contentDescription = "Database"
                         )
                     },
@@ -120,7 +133,12 @@ fun TrailMixApp() {
                     },
                     icon = {
                         Icon(
-                            Icons.Default.Settings,
+                            painter = painterResource(
+                                if (currentScreen == TrailMixScreen.SETTINGS)
+                                    R.drawable.settings_filled
+                                else
+                                    R.drawable.settings_unfilled
+                            ),
                             contentDescription = "Settings"
                         )
                     },
